@@ -18,7 +18,7 @@ function userController(app, banco){
         res.send(user)
       
       };
-      res.send("erro ai ógit ")
+      res.send("Deu erro ai ó ")
     })
 
 };

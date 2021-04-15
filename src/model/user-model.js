@@ -1,8 +1,9 @@
 class userModel{
-   constructor(nome,email,password){
-      this.nome = nome;
+   constructor(id,name,email,password){
+      this.id=id;
+      this.name = name;
       this.email = email;
-      this.password = password;
+      this.password = password
    }
 }
 module.exports = userModel;

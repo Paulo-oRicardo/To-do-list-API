@@ -1,13 +1,10 @@
 class taskModel{
-   insertTask(id,title,description,status,data){
-     
-      task={
-         taskId:id,
-         title:title,
-         decription:description,
-         status:status,
-         data:data,
-      }
+    constructor(id,title,description,status,data){
+         this.taskId= id,
+         this.title= title,
+         this.decription= description,
+         this.status= status,
+         this.data= data
    }
 }
-module.exports = insertTask;
+module.exports = taskModel;

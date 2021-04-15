@@ -1,5 +1,7 @@
+const userModel = require("../model/user-model");
+
 const banco ={
-   user:[],
+   user:[new userModel("Charlie", "Charlie@aqui.com","1234")],
    task:[]
 }
 

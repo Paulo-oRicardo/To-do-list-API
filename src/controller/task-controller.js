@@ -1,34 +1,46 @@
 const taskModel = require("../model/task-model");
+const Dao = require("../DAO/task-dao")
 
-function taskController(app, banco){
-  app.get('/task', (req, res)=> {
-     const task = banco.task;
-     res.send(task)
-   })
-   app.post('/task', (req, res)=> {
-    const body = req.body;
-    let task = new taskModel(body.id, body.title, body.description, body.status, body.data);
-    if(body.id && body.title && body.description && body.status && body.data){
-      console.log(JSON.stringify(task));
-      banco.task.push(task)
-      res.send(task)
-    
-    };
-    res.send("Deu erro ai ó ")
-  })
+function taskController(app, bd){
+  const taskDao = new Dao(bd)
+
+  app.get("/task", (req, res) => {
+    taskDao.listTask()
+      .then(task => res.send(task))
+      .catch(err => res.send(err));
+  });
+
+  app.get("/task/:title", (req, res) => {
+    const title = req.params.title;
+    taskDao.listTaskForTitle(title)
+      .then(titulo => res.send(titulo))
+      .catch(err => res.send({mensagem:`Erro: ${err} na consulta`}));
+  });
+
+  app.post("/task", (req, res) => {
+    const {titulo, descricao,status,datecriacao,id_usuario} = req.body;
+    const task = new taskModel(
+      0, titulo, descricao, status, datecriacao, id_usuario
+    );
+    taskDao.insertTask(task)
+      .then(tarefas => res.send({mensagem:tarefas}))
+      .catch(err => res.send({mensagem:`${err}`}));
+  });
   
-  app.delete('/task/:id',(req,res) => {
-    const task = banco.task
-    
-    for(let i = 0; i<task.length; i++){
-      if(req.params.id == task[i].id){
-        user.splice(i,1)
-    }
-    }
-    // const users = user.find(users => {users.email == req.params.email})
-    // console.log(users)
-    // remove (users)
-    res.send({mensagem: `Usuário com email ${req.params.id} passado pelo paramêtro foi deletado`})
-  })
+  app.put("/task/:title", (req, res) => {
+    let title= req.params.title;
+    const body = req.body;
+    console.log(body);
+    taskDao.changesTask(title, body)
+      .then(sucess => res.send({ mensagem: sucess }))
+      .catch(err => res.send({ mensagem: err }));
+  });
+
+  app.delete("/task/:title", (req, res) => {
+    let title = req.params.title;
+    taskDao.deleteTask(title)
+      .then( sucess=> res.send({ mensagem: sucess }))
+      .catch(err => res.send({ mensagem: err }));
+  });
 }
 module.exports = taskController

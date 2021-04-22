@@ -28,7 +28,7 @@
 
 ## 🛠️ Tecnologias
 
-      As seguintes tecnologias foram utilizadas no projeto:
+   As seguintes tecnologias foram utilizadas no projeto:
 
 - [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
 - [Node.js](https://nodejs.org/en/)

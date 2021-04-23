@@ -14,32 +14,32 @@ function taskController(app, bd){
     const title = req.params.title;
     taskDao.listTaskForTitle(title)
       .then(titulo => res.send(titulo))
-      .catch(err => res.send({mensagem:`Erro: ${err} na consulta`}));
+      .catch(err => res.send({mensagem:`Erro na consulta`}));
   });
 
   app.post("/task", (req, res) => {
-    const {titulo, descricao,status,datecriacao,id_usuario} = req.body;
-    const task = new taskModel(
-      0, titulo, descricao, status, datecriacao, id_usuario
-    );
-    taskDao.insertTask(task)
-      .then(tarefas => res.send({mensagem:tarefas}))
-      .catch(err => res.send({mensagem:`${err}`}));
-  });
-  
-  app.put("/task/:title", (req, res) => {
-    let title= req.params.title;
     const body = req.body;
     console.log(body);
-    taskDao.changesTask(title, body)
-      .then(sucess => res.send({ mensagem: sucess }))
+    const task = new taskModel(
+      0, body.TITULO, body.DESCRICAO, body.STATUS, body.DATACRIACAO, body.ID_USUARIO);
+    taskDao.insertTask(task)
+      .then(tarefas => res.send({mensagem:tarefas}))
+      .catch(err => res.send({mensagem:err}));
+  });
+  
+  app.put("/task/:id", (req, res) => {
+    let id= req.params.id;
+    const body = req.body;
+    console.log(body);
+    taskDao.changesTask(id, body)
+      .then(success => res.send({ mensagem: success }))
       .catch(err => res.send({ mensagem: err }));
   });
 
   app.delete("/task/:title", (req, res) => {
     let title = req.params.title;
     taskDao.deleteTask(title)
-      .then( sucess=> res.send({ mensagem: sucess }))
+      .then( success=> res.send({ mensagem: success }))
       .catch(err => res.send({ mensagem: err }));
   });
 }

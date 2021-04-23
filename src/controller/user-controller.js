@@ -1,53 +1,51 @@
 
-const { request } = require('express');
 const userModel = require('../model/user-model');
 const Dao = require('../DAO/usuario-dao')
 
 function userController(app, bd){
   const Userdao = new Dao(bd)
    app.get('/user/:email', (req, res)=> {
-    //  const users = banco.user;
-      // res.send(users)
       let email = req.params.email;
       Userdao.listForEmail(email)
-      .then(usuario =>{res.send(usuario)})
-      .catch(err => res.senf(`Erro: ${err}`))
+      .then(user => res.send(user))
+      .catch(err => res.send({mensagem: err}))
     })
    
-    app.get('/user',(req, res)=> {
-      Userdao.listaUsuarios()
-      .then(users =>{
-      res.status(200).send(users)
-      }).catch(err=> res.send({mensagem:`Deu erro ai ${err}`}))
-      });
+    app.get('/user', async (req, res)=> {
+      try {
+        let result = await Userdao.listUser()
+        res.send(result)
+      }
+      catch(error){
+        res.send(503).send({ mensagem: error })
+      }
+    });
 
 
     app.post('/user', (req, res)=> {
-      // const {name, email, password} = req.body
-      const {name, email,password} = req.body;
-      let user = new userModel(0, name, email, password);
-      Userdao.insereUsuario(user)
+      const {NOME, EMAIL, SENHA} = req.body;
+      let user = new userModel(0,NOME, EMAIL, SENHA);
+      Userdao.insertUser(user)
       .then(insertUser => {
-        res.status(201).send({mensagem:"Usuario inserido com sucesso"})
+        res.status(201).send({mensagem:insertUser})
       }).catch(err =>
-        res.send({mensagem: `Olha esse erro aqui: ${err}`})
+        res.send({mensagem: err})
       )
     });
 
     app.put("/user/:email", (req, res) => {
       const body = req.body;
       let email = req.params.email;
-      console.log(body);
-      Userdao.alteraUsuario(email,body)
-      .then(mensagemSucesso => res.send({mensagem: mensagemSucesso}))
-      .catch(mensagemFalha => res.send({mensagem: mensagemFalha}));
+      Userdao.changesUser(email,body)
+      .then(messageSuccess => res.send({mensagem: messageSuccess}))
+      .catch(messageFailure => res.send({mensagem: messageFailure}));
     });
 
-    app.delete("/user/:id", (req, res) => {
-      let id = req.params.id;
-      Userdao.deletaUsuario(id)
-      .then(mensagemSucesso => res.send({mensagem: mensagemSucesso}))
-      .catch(mensagemFalha => res.send({mensagem: mensagemFalha}));
+    app.delete("/user/:email", (req, res) => {
+      let email = req.params.email;
+      Userdao.deleteUser(email)
+      .then(messageSuccess => res.send({mensagem: messageSuccess}))
+      .catch(messageFailure => res.send({mensagem: messageFailure}));
     });
 };
 module.exports = userController

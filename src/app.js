@@ -7,7 +7,7 @@ const cors = require('cors')
 const userController = require("./controller/user-controller")
 const taskController = require("./controller/task-controller")
 const port = 8080;
-
+app.use(express.json());
 // bd.all("SELECT * FROM USUARIOS", (err, rows)=>{
 //   if(err){
 //      throw new Error(`Erro ao rodas consulta`)
@@ -20,7 +20,7 @@ app.use((req,res,next) =>{
   next()
 })
 app.use(cors())
-app.use(express.json());
+
 userController(app,bd)
 taskController(app,bd)
 
